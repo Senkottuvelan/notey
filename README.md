@@ -1,4 +1,4 @@
-#Notey
+# Notey
 
 A simple notes taking app made with React.
 
