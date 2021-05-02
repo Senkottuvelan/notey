@@ -1,6 +1,6 @@
 # Notey
 
-A simple notes taking app made with React.
+A simple notes taking app made with React and Firebase as Auth Provider.
 
 Added SMS functionality for ease of receiving the note immediately in your Mobile.
 
