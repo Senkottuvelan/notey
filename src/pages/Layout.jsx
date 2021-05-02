@@ -13,6 +13,7 @@ export default function Layout(props){
       .signOut()
       .then(() => {
         // Sign-out successful.
+        localStorage.clear();
         history.push("/");
       })
       .catch((error) => {

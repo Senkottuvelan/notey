@@ -28,7 +28,7 @@ export default function Home(){
             },
         },
     };
-    console.log("home");
+    //console.log("home");
     return (
         <Layout>
             <motion.div exit="exit" initial="initial" animate="animate">
