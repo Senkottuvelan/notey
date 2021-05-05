@@ -9,7 +9,10 @@ export default function Login() {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       // User is signed in.
-      console.log(user);
+      console.log(user.email);
+      localStorage.setItem('email_for_notes',user.email);
+
+    // localStorage.setItem('email_for_notes',user.email);
       history.push("/home");
     }
   });
@@ -19,7 +22,7 @@ export default function Login() {
       .auth()
       .signInWithPopup(provider)
       .then((result) => {
-        console.log(result);
+       // console.log(result);
         /** @type {firebase.auth.OAuthCredential} */
         var credential = result.credential;
       })

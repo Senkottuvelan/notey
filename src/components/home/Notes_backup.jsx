@@ -11,6 +11,14 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 //import { makeStyles } from '@material-ui/core/styles';
+//SMSKEYS
+const SEND_SMS_API_KEY =
+  "ZIoUQdVzuQdrovlrHOktWaJC38xDwwaZzMB0KUJIOyUwNdZ4Gtrza6pBWV3g";
+//EMAILKEYS
+const sendMail = require("@sendgrid/mail");
+const SEND_EMAIL_API_KEY =
+  "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";
+sendMail.setApiKey(SEND_EMAIL_API_KEY);
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -39,16 +47,23 @@ export default function Notes(props) {
   const [open3, setOpen3] = React.useState({
     mobile: "",
   });
+  const [openemailsuccess, setOpenEmailsuccess] = React.useState(false);
+  const handleCloseEmailSuccess = () => {
+    setOpenEmailsuccess(false);
+  };
+  const [openemailfailure, setOpenEmailFailure] = React.useState(false);
+  const handleCloseEmailFailure = () => {
+    setOpenEmailFailure(false);
+  };
 
   const handleClickOpen = (note) => {
     // var note_for_sms;
-    localStorage.setItem('note_for_sms', note);
-    console.log(localStorage.getItem('note_for_sms'));
-    if((localStorage.getItem('mobile_for_sms'))){
-setOpen2(false);
-Sendsms(localStorage.getItem('mobile_for_sms'));
-    }
-    else{
+    localStorage.setItem("note_for_sms", note);
+    console.log(localStorage.getItem("note_for_sms"));
+    if (localStorage.getItem("mobile_for_sms")) {
+      setOpen2(false);
+      Sendsms(localStorage.getItem("mobile_for_sms"));
+    } else {
       setOpen2(true);
     }
     //setOpen2(true);
@@ -58,9 +73,9 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
   };
 
   const handlesendsms = (mobileno) => {
-   // var mobile_for_sms;
+    // var mobile_for_sms;
     setOpen2(false);
-    localStorage.setItem('mobile_for_sms', mobileno);
+    localStorage.setItem("mobile_for_sms", mobileno);
     //console.log(mobileno);
     Sendsms(mobileno);
 
@@ -68,13 +83,17 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
   };
   function Sendsms(mobileno) {
     //let smsdata = ;
-    console.log(localStorage.getItem('note_for_sms'));
+    console.log(localStorage.getItem("note_for_sms"));
     //note=localStorage.getItem(note_for_sms);
     axios
       .get(
-        "https://www.fast2sms.com/dev/bulkV2?authorization=ZIoUQdVzuQdrovlrHOktWaJC38xDwwaZzMB0KUJIOyUwNdZ4Gtrza6pBWV3g&route=v3&sender_id=TXTIND&message="+
-        localStorage.getItem('note_for_sms')+
-          "&language=english&flash=0&numbers="+mobileno+""
+        "https://www.fast2sms.com/dev/bulkV2?authorization=" +
+          SEND_SMS_API_KEY +
+          "&route=v3&sender_id=TXTIND&message=" +
+          localStorage.getItem("note_for_sms") +
+          "&language=english&flash=0&numbers=" +
+          mobileno +
+          ""
       )
       .then((response) => {
         // console.log(response.status);
@@ -85,6 +104,20 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
       .catch((error) => {
         setOpen1(true);
       });
+  }
+  function Sendemail(note_for_email) {
+    
+    //var nameofclient = localStorage.getItem('note_for_sms');
+    const message = {
+      to: "senkottuvelanscientist@gmail.com",
+      from: { name: "Notey!", email: "notes@learnwithtamil.com" },
+      subject: "Hello there!",
+      html: "<h3>The note you have requested is...</h3><br><h1>"+note_for_email+"<h1>",
+    };
+    sendMail
+      .send(message)
+      .then((response) => setOpenEmailsuccess(true))
+      .catch((error) => setOpenEmailFailure(true));
   }
   const { notes } = props;
   if (!notes || notes.length === 0) {
@@ -107,6 +140,14 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
                   >
                     Send SMS
                   </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className="d-flex ml-auto mt-3 text-capitalize font-weight-bold"
+                    onClick={() => Sendemail(note.note)}
+                  >
+                    Send Email
+                  </Button>
                 </Card>
               );
             })}
@@ -120,6 +161,16 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
         <Snackbar open={open1} autoHideDuration={6000} onClose={handleClose1}>
           <Alert onClose={handleClose1} severity="error">
             SMS Failed!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openemailsuccess} autoHideDuration={6000} onClose={handleCloseEmailSuccess}>
+          <Alert onClose={handleCloseEmailSuccess} severity="success">
+            Email sent successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={openemailfailure} autoHideDuration={6000} onClose={handleCloseEmailFailure}>
+          <Alert onClose={handleCloseEmailFailure} severity="error">
+            Email Failed!
           </Alert>
         </Snackbar>
         <Dialog
@@ -145,7 +196,7 @@ Sendsms(localStorage.getItem('mobile_for_sms'));
                 const { value } = event.target;
                 setOpen3({ mobile: value });
               }}
-              defaultValue={localStorage.getItem('mobile_for_sms')}
+              defaultValue={localStorage.getItem("mobile_for_sms")}
               fullWidth
             />
           </DialogContent>
