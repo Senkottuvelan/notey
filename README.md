@@ -2,7 +2,7 @@
 
 A simple notes taking app made with React and Firebase as Auth Provider.
 
-Added SMS functionality for ease of receiving the note immediately in your Mobile.
+Added SMS and Email functionality for ease of receiving the note immediately in your Mobile.
 
 Live app here - https://notey.learnwithtamil.com/
 
