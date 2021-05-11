@@ -17,7 +17,7 @@ const SEND_SMS_API_KEY =
 //EMAILKEYS
 const sendMail = require("@sendgrid/mail");
 const SEND_EMAIL_API_KEY =
-  "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";
+  "MY_KEY";
 sendMail.setApiKey(SEND_EMAIL_API_KEY);
 
 function Alert(props) {
